@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Jarvis",
+    "slug": "jarvis",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#000000",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jarvis.voice",
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Jarvis needs speech recognition to understand your voice commands.",
+        "NSMicrophoneUsageDescription": "Jarvis needs microphone access to hear your voice."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#000000"
+      },
+      "package": "com.jarvis.voice",
+      "permissions": ["RECORD_AUDIO"]
+    },
+    "plugins": [
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Jarvis needs microphone access to hear your voice."
+        }
+      ]
+    ]
+  }
+}
