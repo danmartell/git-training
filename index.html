@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Influential Followers</title>
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --card: rgba(255,255,255,0.72);
+    --card-border: rgba(0,0,0,0.06);
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #aeaeb2;
+    --accent: #0071e3;
+    --accent-hover: #0077ED;
+    --green: #34c759;
+    --rank-gold: #f5a623;
+    --rank-silver: #8e8e93;
+    --rank-bronze: #ac6f37;
+    --row-hover: rgba(0,113,227,0.04);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    --radius: 16px;
+    --radius-sm: 12px;
+    --radius-xs: 8px;
+    --transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+                 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    background: rgba(245,245,247,0.72);
+    border-bottom: 0.5px solid var(--card-border);
+    padding: 16px 0;
+  }
+
+  .header-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), #5856d6);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .cached-badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--green);
+    background: rgba(52,199,89,0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: none;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .cached-badge.visible { display: flex; }
+
+  /* ── Setup Card ── */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .setup-card {
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 0.5px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 24px;
+    transition: var(--transition);
+  }
+
+  .setup-card h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+
+  .setup-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .input-group {
+    flex: 1;
+    position: relative;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .input-group input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: var(--radius-xs);
+    background: rgba(255,255,255,0.8);
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition);
+  }
+
+  .input-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.12);
+  }
+
+  .input-group input::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .btn-primary {
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    color: white;
+    background: var(--accent);
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover { background: var(--accent-hover); transform: scale(1.02); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .btn-secondary:hover { background: rgba(0,113,227,0.06); }
+
+  /* ── Status Bar ── */
+  .status-bar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    border: 0.5px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+    animation: slideDown 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .status-bar.visible { display: flex; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(0,113,227,0.15);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .status-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    flex: 1;
+  }
+
+  .status-text strong { color: var(--text-primary); font-weight: 600; }
+
+  .stat-pills {
+    display: flex;
+    gap: 8px;
+  }
+
+  .stat-pill {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    letter-spacing: -0.1px;
+    white-space: nowrap;
+  }
+
+  .stat-pill.total {
+    color: var(--accent);
+    background: rgba(0,113,227,0.08);
+  }
+
+  .stat-pill.rate {
+    color: var(--green);
+    background: rgba(52,199,89,0.08);
+  }
+
+  /* ── Table ── */
+  .table-card {
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 0.5px solid var(--card-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    display: none;
+  }
+
+  .table-card.visible { display: block; }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 56px 1fr 140px;
+    padding: 12px 24px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-tertiary);
+    border-bottom: 0.5px solid var(--card-border);
+    background: rgba(0,0,0,0.015);
+    position: sticky;
+    top: 0;
+  }
+
+  .table-header span:last-child { text-align: right; }
+
+  .table-body {
+    max-height: 70vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .table-body::-webkit-scrollbar { width: 6px; }
+  .table-body::-webkit-scrollbar-track { background: transparent; }
+  .table-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+
+  .follower-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 140px;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 0.5px solid rgba(0,0,0,0.03);
+    transition: background 0.2s ease, transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.35s ease;
+    cursor: default;
+    animation: rowEnter 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  }
+
+  .follower-row:hover { background: var(--row-hover); }
+
+  @keyframes rowEnter {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .rank {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+  }
+
+  .rank-1 { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+  .rank-2 { background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: #475569; }
+  .rank-3 { background: linear-gradient(135deg, #fed7aa, #fdba74); color: #7c2d12; }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e5e5ea, #d1d1d6);
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+
+  .avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--accent), #5856d6);
+  }
+
+  .user-details {
+    min-width: 0;
+  }
+
+  .user-name {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .verified-badge {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .verified-badge svg { width: 10px; height: 10px; fill: white; }
+
+  .user-handle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-bio {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+    max-width: 400px;
+  }
+
+  .follower-count {
+    text-align: right;
+    font-size: 17px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+  }
+
+  .follower-count small {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    letter-spacing: 0;
+  }
+
+  /* ── Completed State ── */
+  .done-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    background: rgba(52,199,89,0.08);
+    border-radius: 20px;
+  }
+
+  /* ── Empty State ── */
+  .empty-state {
+    padding: 80px 24px;
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 15px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .container { padding: 16px; }
+    .setup-card { padding: 24px; }
+    .form-row { flex-direction: column; }
+    .header-inner { padding: 0 16px; }
+    .table-header, .follower-row { grid-template-columns: 44px 1fr 100px; padding: 12px 16px; }
+    .follower-count { font-size: 15px; }
+    .user-bio { display: none; }
+    .stat-pills { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">iF</div>
+      Influential Followers
+    </div>
+    <div class="cached-badge" id="cachedBadge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <span id="cachedCount">0</span> cached
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="container">
+
+  <!-- Setup -->
+  <div class="setup-card" id="setupCard">
+    <h2>Find your most influential followers</h2>
+    <p>Enter your Apify API token to pull follower data for any Twitter/X account.<br>
+       Results are cached locally so you never pay to fetch the same followers twice.</p>
+    <div class="form-row">
+      <div class="input-group" style="flex:2">
+        <label>Apify API Token</label>
+        <input type="password" id="apiToken" placeholder="apify_api_..." autocomplete="off">
+      </div>
+      <div class="input-group" style="flex:1">
+        <label>Username</label>
+        <input type="text" id="username" value="danmartell" placeholder="danmartell">
+      </div>
+      <div class="input-group" style="flex:0.6">
+        <label>Max Followers</label>
+        <input type="number" id="maxItems" placeholder="All" min="1">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="startBtn" onclick="startFetch()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Start Scanning
+      </button>
+      <button class="btn-secondary" id="clearCacheBtn" onclick="clearCache()" style="display:none">Clear Cache</button>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status-bar" id="statusBar">
+    <div class="spinner" id="statusSpinner"></div>
+    <div class="status-text" id="statusText">Initializing...</div>
+    <div class="stat-pills">
+      <div class="stat-pill total" id="statTotal">0 fetched</div>
+      <div class="stat-pill rate" id="statRate">0/sec</div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card" id="tableCard">
+    <div class="table-header">
+      <span>#</span>
+      <span>Follower</span>
+      <span style="text-align:right">Followers</span>
+    </div>
+    <div class="table-body" id="tableBody"></div>
+  </div>
+
+</div>
+
+<script>
+const ACTOR_ID = 'apidojo/twitter-user-scraper';
+const APIFY_BASE = 'https://api.apify.com/v2';
+const CACHE_PREFIX = 'if_cache_';
+const TOP_N = 100;
+
+let allFollowers = new Map();   // username -> follower object
+let currentRunId = null;
+let polling = false;
+let fetchStartTime = 0;
+let totalFetched = 0;
+
+// ── Cache ──
+
+function getCacheKey(username) {
+  return CACHE_PREFIX + username.toLowerCase();
+}
+
+function loadCache(username) {
+  try {
+    const raw = localStorage.getItem(getCacheKey(username));
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch { return []; }
+}
+
+function saveCache(username, followers) {
+  try {
+    localStorage.setItem(getCacheKey(username), JSON.stringify(followers));
+  } catch (e) {
+    console.warn('Cache write failed:', e);
+  }
+}
+
+function clearCache() {
+  const username = document.getElementById('username').value.trim();
+  if (username) localStorage.removeItem(getCacheKey(username));
+  allFollowers.clear();
+  renderTable();
+  updateCachedBadge(0);
+  document.getElementById('clearCacheBtn').style.display = 'none';
+}
+
+function updateCachedBadge(n) {
+  const badge = document.getElementById('cachedBadge');
+  document.getElementById('cachedCount').textContent = n.toLocaleString();
+  badge.classList.toggle('visible', n > 0);
+}
+
+// ── Normalization ──
+
+function normalize(raw) {
+  const username = raw.userName || raw.username || raw.screen_name || raw.screenName || '';
+  const name = raw.name || raw.displayName || raw.fullName || '';
+  const followersCount = raw.followersCount ?? raw.followers_count ?? raw.followerCount
+    ?? (raw.publicMetrics && raw.publicMetrics.followersCount) ?? 0;
+  const followingCount = raw.followingCount ?? raw.following_count ?? raw.friendsCount
+    ?? (raw.publicMetrics && raw.publicMetrics.followingCount) ?? 0;
+  const description = (raw.description || raw.bio || raw.rawDescription || '').replace(/\n/g, ' ').trim();
+  const verified = raw.isBlueVerified || raw.verified || raw.isVerified || false;
+  const location = raw.location || raw.userLocation || '';
+  const avatar = raw.profileImageUrl || raw.profilePicture || raw.profile_image_url || raw.avatar || '';
+
+  return {
+    username,
+    name,
+    followersCount: parseInt(followersCount) || 0,
+    followingCount: parseInt(followingCount) || 0,
+    description,
+    verified,
+    location,
+    avatar,
+  };
+}
+
+// ── Rendering ──
+
+function formatNumber(n) {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+  return n.toLocaleString();
+}
+
+function renderTable() {
+  const sorted = Array.from(allFollowers.values())
+    .sort((a, b) => b.followersCount - a.followersCount)
+    .slice(0, TOP_N);
+
+  const tbody = document.getElementById('tableBody');
+  const existing = tbody.querySelectorAll('.follower-row');
+  const existingMap = new Map();
+  existing.forEach(el => existingMap.set(el.dataset.username, el));
+
+  const fragment = document.createDocumentFragment();
+
+  sorted.forEach((f, i) => {
+    const rank = i + 1;
+    let row = existingMap.get(f.username);
+
+    if (row) {
+      // Update in-place
+      const countEl = row.querySelector('.follower-count');
+      countEl.innerHTML = `${formatNumber(f.followersCount)}<small>followers</small>`;
+      const rankEl = row.querySelector('.rank');
+      rankEl.textContent = rank;
+      rankEl.className = 'rank' + (rank <= 3 ? ' rank-' + rank : '');
+      row.style.animationDelay = '0s';
+      row.style.animation = 'none';
+      existingMap.delete(f.username);
+    } else {
+      row = createRow(f, rank);
+      row.style.animationDelay = `${Math.min(i * 0.03, 0.6)}s`;
+    }
+
+    fragment.appendChild(row);
+  });
+
+  // Remove rows that fell out of top 100
+  existingMap.forEach(el => el.remove());
+
+  tbody.innerHTML = '';
+  tbody.appendChild(fragment);
+}
+
+function createRow(f, rank) {
+  const row = document.createElement('div');
+  row.className = 'follower-row';
+  row.dataset.username = f.username;
+
+  const initial = (f.name || f.username || '?')[0].toUpperCase();
+  const avatarHtml = f.avatar
+    ? `<img src="${f.avatar}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'avatar-placeholder\\'>${initial}</div>'">`
+    : `<div class="avatar-placeholder">${initial}</div>`;
+
+  const verifiedHtml = f.verified
+    ? `<span class="verified-badge"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>`
+    : '';
+
+  const bioHtml = f.description
+    ? `<div class="user-bio">${escapeHtml(f.description)}</div>`
+    : '';
+
+  row.innerHTML = `
+    <div class="rank${rank <= 3 ? ' rank-' + rank : ''}">${rank}</div>
+    <div class="user-info">
+      <div class="avatar">${avatarHtml}</div>
+      <div class="user-details">
+        <div class="user-name">${escapeHtml(f.name || f.username)}${verifiedHtml}</div>
+        <div class="user-handle">@${escapeHtml(f.username)}</div>
+        ${bioHtml}
+      </div>
+    </div>
+    <div class="follower-count">${formatNumber(f.followersCount)}<small>followers</small></div>
+  `;
+
+  row.addEventListener('click', () => {
+    window.open(`https://x.com/${f.username}`, '_blank');
+  });
+  row.style.cursor = 'pointer';
+
+  return row;
+}
+
+function escapeHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+// ── Status ──
+
+function setStatus(text, done) {
+  const bar = document.getElementById('statusBar');
+  const spinner = document.getElementById('statusSpinner');
+  const statusText = document.getElementById('statusText');
+  bar.classList.add('visible');
+  statusText.innerHTML = text;
+  if (done) {
+    spinner.style.display = 'none';
+  } else {
+    spinner.style.display = 'block';
+  }
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = `${totalFetched.toLocaleString()} fetched`;
+  const elapsed = (Date.now() - fetchStartTime) / 1000;
+  if (elapsed > 0) {
+    const rate = Math.round(totalFetched / elapsed);
+    document.getElementById('statRate').textContent = `${rate}/sec`;
+  }
+}
+
+// ── Apify API ──
+
+async function apiFetch(path, options = {}) {
+  const token = document.getElementById('apiToken').value.trim();
+  const sep = path.includes('?') ? '&' : '?';
+  const url = `${APIFY_BASE}${path}${sep}token=${token}`;
+  const res = await fetch(url, options);
+  if (!res.ok) throw new Error(`API error ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+
+async function startActorRun(username, maxItems) {
+  const input = { startUrls: [`https://x.com/${username}`], getFollowers: true, getFollowing: false };
+  if (maxItems) input.maxItems = maxItems;
+
+  const data = await apiFetch(`/acts/${ACTOR_ID}/runs`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+
+  return data.data;
+}
+
+async function getRunStatus(runId) {
+  const data = await apiFetch(`/actor-runs/${runId}`);
+  return data.data;
+}
+
+async function getDatasetItems(datasetId, offset, limit) {
+  const data = await apiFetch(`/datasets/${datasetId}/items?offset=${offset}&limit=${limit}&format=json`);
+  return data;
+}
+
+// ── Main Flow ──
+
+async function startFetch() {
+  const token = document.getElementById('apiToken').value.trim();
+  const username = document.getElementById('username').value.trim();
+  const maxItems = parseInt(document.getElementById('maxItems').value) || 0;
+
+  if (!token) { alert('Please enter your Apify API token.'); return; }
+  if (!username) { alert('Please enter a username.'); return; }
+
+  // Disable button
+  const btn = document.getElementById('startBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner" style="width:14px;height:14px;border-width:2px"></div> Scanning...`;
+
+  // Load cache
+  const cached = loadCache(username);
+  allFollowers.clear();
+  cached.forEach(f => allFollowers.set(f.username, f));
+  updateCachedBadge(cached.length);
+
+  document.getElementById('tableCard').classList.add('visible');
+  document.getElementById('clearCacheBtn').style.display = 'inline-flex';
+
+  if (allFollowers.size > 0) {
+    renderTable();
+    setStatus(`Loaded <strong>${cached.length.toLocaleString()}</strong> from cache. Starting fresh scan...`, false);
+  } else {
+    setStatus('Starting Apify actor...', false);
+  }
+
+  fetchStartTime = Date.now();
+  totalFetched = 0;
+
+  try {
+    const run = await startActorRun(username, maxItems || undefined);
+    currentRunId = run.id;
+    const datasetId = run.defaultDatasetId;
+
+    setStatus(`Actor started. Run ID: <strong>${run.id.slice(0, 8)}...</strong> Waiting for data...`, false);
+
+    // Poll for data
+    let offset = 0;
+    const BATCH = 100;
+    polling = true;
+
+    while (polling) {
+      // Fetch items
+      try {
+        const items = await getDatasetItems(datasetId, offset, BATCH);
+        if (items && items.length > 0) {
+          let newCount = 0;
+          items.forEach(raw => {
+            const f = normalize(raw);
+            if (f.username && f.username.toLowerCase() !== username.toLowerCase()) {
+              if (!allFollowers.has(f.username)) newCount++;
+              allFollowers.set(f.username, f);
+            }
+          });
+          offset += items.length;
+          totalFetched = offset;
+          updateStats();
+
+          if (newCount > 0) renderTable();
+
+          setStatus(`Scanning... <strong>${allFollowers.size.toLocaleString()}</strong> unique followers found`, false);
+        }
+      } catch (e) {
+        // Dataset might not be ready yet, that's ok
+      }
+
+      // Check run status
+      const status = await getRunStatus(currentRunId);
+      if (status.status === 'SUCCEEDED' || status.status === 'FAILED' || status.status === 'ABORTED' || status.status === 'TIMED-OUT') {
+        // Final fetch to get any remaining items
+        let finalItems;
+        do {
+          finalItems = await getDatasetItems(datasetId, offset, BATCH);
+          if (finalItems && finalItems.length > 0) {
+            finalItems.forEach(raw => {
+              const f = normalize(raw);
+              if (f.username && f.username.toLowerCase() !== username.toLowerCase()) {
+                allFollowers.set(f.username, f);
+              }
+            });
+            offset += finalItems.length;
+            totalFetched = offset;
+          }
+        } while (finalItems && finalItems.length === BATCH);
+
+        updateStats();
+        renderTable();
+
+        // Save to cache
+        saveCache(username, Array.from(allFollowers.values()));
+        updateCachedBadge(allFollowers.size);
+
+        if (status.status === 'SUCCEEDED') {
+          setStatus(`<span class="done-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Complete</span>&nbsp; <strong>${allFollowers.size.toLocaleString()}</strong> followers ranked by influence`, true);
+        } else {
+          setStatus(`Run ended with status: <strong>${status.status}</strong>. ${allFollowers.size.toLocaleString()} followers collected.`, true);
+        }
+
+        polling = false;
+        break;
+      }
+
+      // Wait before next poll
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  } catch (err) {
+    setStatus(`Error: ${escapeHtml(err.message)}`, true);
+    console.error(err);
+  }
+
+  // Re-enable button
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Scan Again`;
+}
+
+// ── Init: show cache count on load ──
+(function init() {
+  const username = document.getElementById('username').value.trim();
+  const cached = loadCache(username);
+  if (cached.length > 0) {
+    updateCachedBadge(cached.length);
+    document.getElementById('clearCacheBtn').style.display = 'inline-flex';
+    // Pre-populate table
+    allFollowers.clear();
+    cached.forEach(f => allFollowers.set(f.username, f));
+    document.getElementById('tableCard').classList.add('visible');
+    renderTable();
+  }
+  // Update cache badge when username changes
+  document.getElementById('username').addEventListener('change', () => {
+    const u = document.getElementById('username').value.trim();
+    const c = loadCache(u);
+    updateCachedBadge(c.length);
+    document.getElementById('clearCacheBtn').style.display = c.length > 0 ? 'inline-flex' : 'none';
+    allFollowers.clear();
+    c.forEach(f => allFollowers.set(f.username, f));
+    document.getElementById('tableCard').classList.toggle('visible', c.length > 0);
+    renderTable();
+  });
+})();
+</script>
+
+</body>
+</html>
