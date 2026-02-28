@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitSnap - Fitness & Nutrition Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1 class="logo">FitSnap</h1>
+      <p class="tagline">Snap your food. Track your fuel. Crush your goals.</p>
+    </div>
+  </header>
+
+  <nav>
+    <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="nav-btn" data-tab="snap">Snap Food</button>
+    <button class="nav-btn" data-tab="log">Food Log</button>
+    <button class="nav-btn" data-tab="activity">Activity</button>
+    <button class="nav-btn" data-tab="workouts">Workouts</button>
+  </nav>
+
+  <main>
+    <!-- Dashboard Tab -->
+    <section id="dashboard" class="tab-content active">
+      <div class="summary-cards">
+        <div class="card calories-card">
+          <h3>Today's Calories</h3>
+          <div class="ring-chart">
+            <svg viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="52" />
+              <circle class="ring-fill" id="calorie-ring" cx="60" cy="60" r="52" />
+            </svg>
+            <div class="ring-label">
+              <span id="dash-calories-eaten">0</span>
+              <small>/ <span id="dash-calorie-goal">2000</span></small>
+            </div>
+          </div>
+        </div>
+        <div class="card activity-card">
+          <h3>Calories Burned</h3>
+          <div class="big-number" id="dash-calories-burned">0</div>
+          <p class="subtext">kcal from activity</p>
+        </div>
+        <div class="card balance-card">
+          <h3>Net Balance</h3>
+          <div class="big-number" id="dash-net-balance">0</div>
+          <p class="subtext">kcal remaining</p>
+        </div>
+      </div>
+
+      <div class="card macro-card">
+        <h3>Macronutrients</h3>
+        <div class="macro-bars">
+          <div class="macro-row">
+            <span class="macro-label">Protein</span>
+            <div class="bar-track"><div class="bar-fill protein-fill" id="protein-bar"></div></div>
+            <span class="macro-value" id="protein-val">0g</span>
+          </div>
+          <div class="macro-row">
+            <span class="macro-label">Carbs</span>
+            <div class="bar-track"><div class="bar-fill carbs-fill" id="carbs-bar"></div></div>
+            <span class="macro-value" id="carbs-val">0g</span>
+          </div>
+          <div class="macro-row">
+            <span class="macro-label">Fat</span>
+            <div class="bar-track"><div class="bar-fill fat-fill" id="fat-bar"></div></div>
+            <span class="macro-value" id="fat-val">0g</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Recommended Workout</h3>
+        <div id="dash-workout-recommendation">
+          <p class="empty-state">Log some food to get a personalized workout recommendation!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Snap Food Tab -->
+    <section id="snap" class="tab-content">
+      <div class="card snap-card">
+        <h3>Snap Your Meal</h3>
+        <p>Take a photo of your food and we'll estimate the calories and macros.</p>
+
+        <div class="camera-area" id="camera-area">
+          <video id="camera-preview" autoplay playsinline></video>
+          <canvas id="snap-canvas" style="display:none;"></canvas>
+          <img id="snap-preview" style="display:none;" alt="Food preview" />
+          <div class="camera-overlay" id="camera-overlay">
+            <span>Tap to start camera</span>
+          </div>
+        </div>
+
+        <div class="snap-controls">
+          <button class="btn btn-secondary" id="btn-start-camera">Start Camera</button>
+          <button class="btn btn-primary" id="btn-capture" disabled>Capture</button>
+          <button class="btn btn-secondary" id="btn-upload">Upload Photo</button>
+          <input type="file" id="file-input" accept="image/*" style="display:none;" />
+        </div>
+
+        <div id="analysis-result" style="display:none;">
+          <h4>Analysis Result</h4>
+          <div class="analysis-grid">
+            <div class="analysis-item">
+              <label>Detected Food</label>
+              <input type="text" id="detected-food" />
+            </div>
+            <div class="analysis-item">
+              <label>Calories (kcal)</label>
+              <input type="number" id="detected-calories" />
+            </div>
+            <div class="analysis-item">
+              <label>Protein (g)</label>
+              <input type="number" id="detected-protein" />
+            </div>
+            <div class="analysis-item">
+              <label>Carbs (g)</label>
+              <input type="number" id="detected-carbs" />
+            </div>
+            <div class="analysis-item">
+              <label>Fat (g)</label>
+              <input type="number" id="detected-fat" />
+            </div>
+            <div class="analysis-item">
+              <label>Meal Type</label>
+              <select id="detected-meal-type">
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="btn-add-food">Add to Food Log</button>
+        </div>
+      </div>
+
+      <!-- Manual entry fallback -->
+      <div class="card">
+        <h3>Or Enter Manually</h3>
+        <div class="analysis-grid">
+          <div class="analysis-item">
+            <label>Food Name</label>
+            <input type="text" id="manual-food" placeholder="e.g. Grilled Chicken Salad" />
+          </div>
+          <div class="analysis-item">
+            <label>Calories (kcal)</label>
+            <input type="number" id="manual-calories" placeholder="350" />
+          </div>
+          <div class="analysis-item">
+            <label>Protein (g)</label>
+            <input type="number" id="manual-protein" placeholder="30" />
+          </div>
+          <div class="analysis-item">
+            <label>Carbs (g)</label>
+            <input type="number" id="manual-carbs" placeholder="25" />
+          </div>
+          <div class="analysis-item">
+            <label>Fat (g)</label>
+            <input type="number" id="manual-fat" placeholder="12" />
+          </div>
+          <div class="analysis-item">
+            <label>Meal Type</label>
+            <select id="manual-meal-type">
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">Snack</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="btn-manual-add">Add to Food Log</button>
+      </div>
+    </section>
+
+    <!-- Food Log Tab -->
+    <section id="log" class="tab-content">
+      <div class="card">
+        <div class="log-header">
+          <h3>Today's Food Log</h3>
+          <button class="btn btn-small btn-danger" id="btn-clear-log">Clear All</button>
+        </div>
+        <div id="food-log-list">
+          <p class="empty-state">No food logged yet. Snap a photo or add food manually!</p>
+        </div>
+        <div class="log-totals" id="log-totals" style="display:none;">
+          <div><strong>Total Calories:</strong> <span id="log-total-cal">0</span> kcal</div>
+          <div><strong>Total Protein:</strong> <span id="log-total-protein">0</span>g</div>
+          <div><strong>Total Carbs:</strong> <span id="log-total-carbs">0</span>g</div>
+          <div><strong>Total Fat:</strong> <span id="log-total-fat">0</span>g</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity Tab -->
+    <section id="activity" class="tab-content">
+      <div class="card">
+        <h3>Log Activity</h3>
+        <div class="analysis-grid">
+          <div class="analysis-item">
+            <label>Activity Type</label>
+            <select id="activity-type">
+              <option value="running">Running</option>
+              <option value="walking">Walking</option>
+              <option value="cycling">Cycling</option>
+              <option value="swimming">Swimming</option>
+              <option value="weightlifting">Weight Lifting</option>
+              <option value="yoga">Yoga</option>
+              <option value="hiit">HIIT</option>
+              <option value="dancing">Dancing</option>
+              <option value="sports">Sports</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="analysis-item">
+            <label>Duration (minutes)</label>
+            <input type="number" id="activity-duration" placeholder="30" />
+          </div>
+          <div class="analysis-item">
+            <label>Intensity</label>
+            <select id="activity-intensity">
+              <option value="low">Low</option>
+              <option value="moderate" selected>Moderate</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+        <div class="estimated-burn">
+          <span>Estimated Burn: </span>
+          <strong id="estimated-burn-value">0 kcal</strong>
+        </div>
+        <button class="btn btn-primary" id="btn-log-activity">Log Activity</button>
+      </div>
+
+      <div class="card">
+        <div class="log-header">
+          <h3>Today's Activities</h3>
+          <button class="btn btn-small btn-danger" id="btn-clear-activities">Clear All</button>
+        </div>
+        <div id="activity-log-list">
+          <p class="empty-state">No activities logged yet. Get moving!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workouts Tab -->
+    <section id="workouts" class="tab-content">
+      <div class="card">
+        <h3>Workout Recommendations</h3>
+        <p>Based on your calorie intake, here are personalized workout suggestions to help you stay balanced.</p>
+        <div id="workout-list">
+          <p class="empty-state">Log some food to receive workout recommendations!</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Calorie Balance Breakdown</h3>
+        <div class="balance-breakdown">
+          <div class="breakdown-row">
+            <span>Calories Consumed</span>
+            <strong id="wb-consumed">0 kcal</strong>
+          </div>
+          <div class="breakdown-row">
+            <span>Calories Burned (Activity)</span>
+            <strong id="wb-burned">0 kcal</strong>
+          </div>
+          <div class="breakdown-row">
+            <span>Basal Metabolic Rate (est.)</span>
+            <strong>1800 kcal</strong>
+          </div>
+          <div class="breakdown-row highlight">
+            <span>Suggested Workout Burn</span>
+            <strong id="wb-suggested">0 kcal</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>FitSnap &copy; 2026 &mdash; Your AI-powered fitness & nutrition companion</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
