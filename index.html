@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30-Day Instagram Reels Content Strategy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+            padding: 60px 20px 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.4rem;
+            color: #fff;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .niche-selector {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .niche-selector input {
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-size: 1rem;
+            width: 300px;
+            outline: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .niche-selector input::placeholder { color: rgba(255,255,255,0.6); }
+
+        .niche-selector button {
+            padding: 14px 28px;
+            border-radius: 12px;
+            border: none;
+            background: #fff;
+            color: #833ab4;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .niche-selector button:hover { transform: scale(1.05); }
+
+        .quick-niches {
+            margin-top: 16px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-niches button {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1.5px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-niches button:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        #strategy-output { display: none; }
+
+        .strategy-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .strategy-header h2 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .strategy-header p {
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card .label {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .week-section {
+            margin-bottom: 40px;
+        }
+
+        .week-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+            padding-left: 4px;
+        }
+
+        .week-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+            padding-left: 4px;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 14px;
+        }
+
+        .day-card {
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 22px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .day-card:hover {
+            border-color: #833ab4;
+            transform: translateY(-2px);
+        }
+
+        .day-card .day-num {
+            display: inline-block;
+            background: linear-gradient(135deg, #833ab4, #fd1d1d);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .day-card .content-type {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-hook { background: #1a3a2a; color: #4ade80; }
+        .type-story { background: #3a2a1a; color: #fbbf24; }
+        .type-value { background: #1a2a3a; color: #60a5fa; }
+        .type-trending { background: #3a1a2a; color: #f472b6; }
+        .type-cta { background: #2a1a3a; color: #a78bfa; }
+        .type-collab { background: #1a3a3a; color: #2dd4bf; }
+
+        .day-card h3 {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .day-card .description {
+            color: #999;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .day-card .hook-text {
+            background: #1a1a1a;
+            border-left: 3px solid #833ab4;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            color: #ccc;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .day-card .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .day-card .tag {
+            font-size: 0.72rem;
+            color: #666;
+            background: #1a1a1a;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .tips-section {
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .tips-section h3 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .tips-section ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+
+        .tips-section li {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            padding: 10px 14px;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+
+        .tips-section li strong { color: #e0e0e0; }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.6rem; }
+            .days-grid { grid-template-columns: 1fr; }
+            .niche-selector input { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>30-Day Instagram Reels Strategy</h1>
+    <p>Enter your niche and get a full month of viral reel ideas with hooks, descriptions, and posting strategy.</p>
+    <div class="niche-selector">
+        <input type="text" id="niche-input" placeholder="Enter your niche (e.g. Business)" />
+        <button onclick="generateStrategy()">Generate Plan</button>
+    </div>
+    <div class="quick-niches">
+        <button onclick="pickNiche('Business')">Business</button>
+        <button onclick="pickNiche('Marketing')">Marketing</button>
+        <button onclick="pickNiche('Entrepreneurship')">Entrepreneurship</button>
+        <button onclick="pickNiche('Fitness')">Fitness</button>
+        <button onclick="pickNiche('Personal Finance')">Personal Finance</button>
+        <button onclick="pickNiche('Real Estate')">Real Estate</button>
+    </div>
+</div>
+
+<div class="container">
+    <div id="strategy-output"></div>
+</div>
+
+<script>
+function pickNiche(niche) {
+    document.getElementById('niche-input').value = niche;
+    generateStrategy();
+}
+
+const CONTENT_TYPES = [
+    { key: 'hook', label: 'Hook', cls: 'type-hook' },
+    { key: 'story', label: 'Story', cls: 'type-story' },
+    { key: 'value', label: 'Value', cls: 'type-value' },
+    { key: 'trending', label: 'Trending', cls: 'type-trending' },
+    { key: 'cta', label: 'CTA', cls: 'type-cta' },
+    { key: 'collab', label: 'Collab', cls: 'type-collab' },
+];
+
+function getStrategyData(niche) {
+    const n = niche.toLowerCase();
+
+    const templates = {
+        weeks: [
+            { title: 'Week 1 — Establish Authority', subtitle: 'Introduce yourself, your expertise, and build trust with quick wins.' },
+            { title: 'Week 2 — Deliver Massive Value', subtitle: 'Teach frameworks, share secrets, and position yourself as the go-to expert.' },
+            { title: 'Week 3 — Create Engagement & Virality', subtitle: 'Leverage trends, hot takes, and controversy to maximize reach.' },
+            { title: 'Week 4 — Convert & Build Community', subtitle: 'Turn followers into fans with CTAs, collabs, and social proof.' },
+        ],
+        days: [
+            // Week 1
+            { type: 0, titleTpl: 'The #1 Mistake People Make in {niche}', descTpl: 'Call out the most common beginner mistake. This creates instant engagement because people want to know if they are guilty of it.', hookTpl: '"Stop doing THIS if you're serious about {niche}…"', tags: ['awareness', 'hook', 'beginner'] },
+            { type: 2, titleTpl: '3 Things I Wish I Knew Before Starting in {niche}', descTpl: 'Share 3 hard-won lessons. Number each one on screen. Keep it under 30 seconds for maximum retention.', hookTpl: '"If I could start over in {niche}, here's what I'd change…"', tags: ['lessons', 'value', 'relatable'] },
+            { type: 1, titleTpl: 'My {niche} Journey — The Raw Truth', descTpl: 'Share your origin story in 60 seconds. Be vulnerable about struggles. This builds deep connection and trust.', hookTpl: '"I went from zero to [result] in {niche}. Here's the real story…"', tags: ['story', 'authenticity', 'personal'] },
+            { type: 3, titleTpl: 'POV: You Finally Understand {niche}', descTpl: 'Use a trending audio. Show the "before confused" and "after enlightened" transformation. Relatable and shareable.', hookTpl: 'POV text overlay with trending sound', tags: ['trending', 'relatable', 'meme'] },
+            { type: 2, titleTpl: 'The {niche} Framework Nobody Talks About', descTpl: 'Reveal a simple framework or mental model. Use text on screen with you talking over it. Educational content gets saved.', hookTpl: '"This simple framework changed my entire approach to {niche}…"', tags: ['framework', 'education', 'saves'] },
+            { type: 0, titleTpl: '"You Don\'t Need {niche}" — Why They\'re Wrong', descTpl: 'Address a common objection or myth. Being contrarian stops the scroll. Respectfully dismantle the argument.', hookTpl: '"Everyone says you don't need {niche}. Here's why they're dead wrong…"', tags: ['contrarian', 'debate', 'hook'] },
+            { type: 4, titleTpl: 'Follow for More {niche} Tips (Week 1 Recap)', descTpl: 'Recap the best tip from the week. End with a strong CTA: "Follow for daily {niche} content." Use a trending sound underneath.', hookTpl: '"This was the most important {niche} tip I shared this week…"', tags: ['recap', 'cta', 'growth'] },
+
+            // Week 2
+            { type: 2, titleTpl: 'The 5-Step {niche} Blueprint', descTpl: 'Walk through a 5-step process. Number each step on screen. This format gets massive saves because people want to reference it later.', hookTpl: '"Here's the exact 5-step blueprint I use for {niche}…"', tags: ['blueprint', 'saves', 'tutorial'] },
+            { type: 0, titleTpl: 'Why 90% of People Fail at {niche}', descTpl: 'Break down the top reasons people fail. Be direct and blunt — strong opinions drive comments and shares.', hookTpl: '"90% of people will never succeed in {niche}. Here's why…"', tags: ['hook', 'bold', 'engagement'] },
+            { type: 1, titleTpl: 'The Day Everything Changed in My {niche} Journey', descTpl: 'Share a specific turning-point moment. Details make stories stick — name the day, place, and emotion.', hookTpl: '"There was one day that completely changed my {niche} career…"', tags: ['story', 'pivotpoint', 'emotional'] },
+            { type: 2, titleTpl: '{niche} Hack That Took Me 2 Years to Learn', descTpl: 'Share an under-the-radar tip that gives outsized results. Position it as insider knowledge. Gets bookmarked.', hookTpl: '"This one {niche} hack took me 2 years to figure out…"', tags: ['hack', 'insider', 'value'] },
+            { type: 3, titleTpl: '{niche} Red Flags vs. Green Flags', descTpl: 'Use the red flag / green flag format (trending). List 3 of each. Fast-paced, visual, and shareable.', hookTpl: 'On-screen text: {niche} Red Flags vs. Green Flags', tags: ['trending', 'format', 'shareable'] },
+            { type: 2, titleTpl: 'Tools I Actually Use for {niche} (No Fluff)', descTpl: 'Share 3-5 tools or resources you genuinely use. Be specific — name, price, and what it does. Saves machine.', hookTpl: '"Here are the exact tools I use every day for {niche}…"', tags: ['tools', 'resources', 'saves'] },
+            { type: 4, titleTpl: 'Save This {niche} Cheat Sheet', descTpl: 'Create a quick visual cheat sheet. Tell them to save it. Saves are the #1 signal for the algorithm to push your content.', hookTpl: '"Save this {niche} cheat sheet — you'll need it…"', tags: ['cheatsheet', 'saves', 'cta'] },
+
+            // Week 3
+            { type: 3, titleTpl: 'Hot Take: The Truth About {niche} in 2026', descTpl: 'Give a bold, slightly controversial prediction or opinion. Controversy = comments = algorithm push. Stay respectful.', hookTpl: '"Nobody wants to hear this, but {niche} in 2026 is…"', tags: ['hottake', 'controversial', 'engagement'] },
+            { type: 0, titleTpl: 'If You're Struggling with {niche}, Watch This', descTpl: 'Speak directly to someone who is stuck. Empathy + clear action steps. This gets shared in DMs constantly.', hookTpl: '"If you're feeling stuck in {niche}, this is your sign…"', tags: ['motivational', 'hook', 'shares'] },
+            { type: 2, titleTpl: '{niche} Tier List — What Actually Works', descTpl: 'Rank strategies or tools in S/A/B/C tiers. This format drives insane comment engagement as people debate your rankings.', hookTpl: '"I ranked every {niche} strategy. Here's my tier list…"', tags: ['tierlist', 'debate', 'engagement'] },
+            { type: 1, titleTpl: 'I Almost Quit {niche}. Here\'s What Saved Me.', descTpl: 'Vulnerable story about a low point and how you pushed through. Authenticity is your unfair advantage.', hookTpl: '"I was THIS close to quitting {niche}…"', tags: ['vulnerability', 'story', 'connection'] },
+            { type: 3, titleTpl: '{niche} Bingo — How Many Apply to You?', descTpl: 'Create a bingo card of common {niche} experiences. People tag friends and share. Pure engagement bait (the good kind).', hookTpl: '"Let\'s play {niche} bingo. How many can you check off?"', tags: ['bingo', 'interactive', 'shares'] },
+            { type: 0, titleTpl: 'The Harsh Reality of {niche} No One Tells You', descTpl: 'Be brutally honest about a downside. People respect honesty over hype. This builds long-term trust.', hookTpl: '"Here's what nobody tells you about {niche}…"', tags: ['reality', 'trust', 'honest'] },
+            { type: 2, titleTpl: 'Do This, Not That — {niche} Edition', descTpl: 'Side-by-side comparison of wrong approach vs. right approach. Visual contrast is easy to follow and gets saved.', hookTpl: '"Stop doing this in {niche}. Do THIS instead…"', tags: ['comparison', 'education', 'saves'] },
+
+            // Week 4
+            { type: 5, titleTpl: 'Duet/Stitch: Reacting to a Viral {niche} Take', descTpl: 'Find a viral reel in your niche. Stitch or duet with your expert reaction. Borrows their audience and algorithm momentum.', hookTpl: '"I saw this viral {niche} take and I had to respond…"', tags: ['duet', 'collab', 'reach'] },
+            { type: 4, titleTpl: 'DM Me "{niche}" for My Free Guide', descTpl: 'Offer a free resource (PDF, checklist, template). Tell them to DM you a keyword. This builds your DM list and deepens engagement.', hookTpl: '"I made a free {niche} guide. DM me the word \'{niche}\' to get it…"', tags: ['leadmagnet', 'cta', 'dms'] },
+            { type: 2, titleTpl: 'The 1% {niche} Secret That Changes Everything', descTpl: 'Share one advanced insight that separates beginners from experts. Position it as exclusive knowledge.', hookTpl: '"Only 1% of people in {niche} know this…"', tags: ['advanced', 'exclusive', 'value'] },
+            { type: 1, titleTpl: 'What {niche} Taught Me About Life', descTpl: 'Connect your niche to a bigger life lesson. This transcends your audience and can reach a much wider group.', hookTpl: '"{niche} taught me something about life that school never did…"', tags: ['lifelesson', 'broad', 'emotional'] },
+            { type: 3, titleTpl: '{niche} Starter Pack', descTpl: 'Use the "starter pack" meme format. Show 4-6 things every beginner in your niche needs. Fun, shareable, and relatable.', hookTpl: 'The {niche} Starter Pack (on screen)', tags: ['meme', 'starterpack', 'shareable'] },
+            { type: 0, titleTpl: 'This {niche} Advice is Ruining Your Growth', descTpl: 'Call out bad advice that circulates in your niche. Be specific about WHY it's wrong and what to do instead.', hookTpl: '"This popular {niche} advice is actually holding you back…"', tags: ['mythbusting', 'contrarian', 'hook'] },
+            { type: 4, titleTpl: '30-Day {niche} Challenge — Are You In?', descTpl: 'Launch a community challenge. Outline simple daily actions. Ask people to comment "I\'M IN." Builds community and boosts engagement.', hookTpl: '"I'm starting a 30-day {niche} challenge. Who's with me?"', tags: ['challenge', 'community', 'cta'] },
+
+            // Days 29-30 bonus
+            { type: 5, titleTpl: 'Q&A: Your Top {niche} Questions Answered', descTpl: 'Answer 3-5 questions from your comments or DMs. Shows you listen and care. Deepens community bond.', hookTpl: '"You asked, I answered. Here are your top {niche} questions…"', tags: ['qa', 'community', 'engagement'] },
+            { type: 4, titleTpl: 'Month 1 Recap + What\'s Coming Next in {niche}', descTpl: 'Recap highlights from the month. Tease next month\'s content. Strong CTA to follow and turn on notifications.', hookTpl: '"Here's everything we covered this month in {niche}…"', tags: ['recap', 'cta', 'retention'] },
+        ],
+    };
+
+    return templates;
+}
+
+function generateStrategy() {
+    const input = document.getElementById('niche-input');
+    const niche = input.value.trim();
+    if (!niche) { input.focus(); return; }
+
+    const data = getStrategyData(niche);
+    const output = document.getElementById('strategy-output');
+
+    let html = '';
+
+    // Header
+    html += `<div class="strategy-header">
+        <h2>Your 30-Day Plan: ${escHtml(niche)}</h2>
+        <p>A complete content calendar with hooks, descriptions, and viral formats for Instagram Reels.</p>
+    </div>`;
+
+    // Stats
+    html += `<div class="stats-bar">
+        <div class="stat-card"><div class="number">30</div><div class="label">Reel Ideas</div></div>
+        <div class="stat-card"><div class="number">6</div><div class="label">Content Types</div></div>
+        <div class="stat-card"><div class="number">30</div><div class="label">Ready-to-Use Hooks</div></div>
+        <div class="stat-card"><div class="number">4</div><div class="label">Weekly Themes</div></div>
+    </div>`;
+
+    // Weeks
+    for (let w = 0; w < 4; w++) {
+        const week = data.weeks[w];
+        const startIdx = w * 7;
+        let endIdx = startIdx + 7;
+        if (w === 3) endIdx = 30; // last week gets days 22-30
+
+        html += `<div class="week-section">
+            <div class="week-title">${week.title}</div>
+            <div class="week-subtitle">${week.subtitle}</div>
+            <div class="days-grid">`;
+
+        for (let d = startIdx; d < endIdx; d++) {
+            const day = data.days[d];
+            const ct = CONTENT_TYPES[day.type];
+            const title = day.titleTpl.replace(/\{niche\}/g, niche);
+            const desc = day.descTpl.replace(/\{niche\}/g, niche);
+            const hook = day.hookTpl.replace(/\{niche\}/g, niche);
+
+            html += `<div class="day-card">
+                <span class="day-num">DAY ${d + 1}</span>
+                <span class="content-type ${ct.cls}">${ct.label}</span>
+                <h3>${escHtml(title)}</h3>
+                <p class="description">${escHtml(desc)}</p>
+                <div class="hook-text">${escHtml(hook)}</div>
+                <div class="tags">${day.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>
+            </div>`;
+        }
+
+        html += `</div></div>`;
+    }
+
+    // Tips Section
+    html += `<div class="tips-section">
+        <h3>Viral Reels Best Practices for ${escHtml(niche)}</h3>
+        <ul>
+            <li><strong>Hook in 0.5 seconds:</strong> The first frame and first sentence decide everything. Lead with curiosity, controversy, or a bold claim.</li>
+            <li><strong>Keep it under 30 seconds:</strong> Shorter reels get replayed more. Replays count as views and boost algorithmic reach.</li>
+            <li><strong>Use captions on screen:</strong> 85% of reels are watched on mute. Text overlays are non-negotiable for reach.</li>
+            <li><strong>Post between 7-9 AM or 6-9 PM:</strong> These windows catch people during commute and wind-down time. Test both and double down on what works.</li>
+            <li><strong>End with a CTA every time:</strong> "Follow for more," "Save this," "Share with a friend" — tell people what to do next.</li>
+            <li><strong>Batch-create content:</strong> Film 5-7 reels in one session. Edit throughout the week. Consistency beats perfection.</li>
+            <li><strong>Engage in comments for 15 min after posting:</strong> Replying to comments in the first hour signals the algorithm that your content sparks conversation.</li>
+            <li><strong>Use 3-5 relevant hashtags:</strong> Mix broad (#${niche.toLowerCase().replace(/\s+/g, '')}) with niche-specific tags. Avoid banned or overly saturated hashtags.</li>
+            <li><strong>Study your analytics weekly:</strong> Double down on formats that get saves and shares — those are the strongest algorithm signals.</li>
+            <li><strong>Repurpose top performers:</strong> If a reel does well, make 3 variations of it. The algorithm already validated the concept — ride the wave.</li>
+        </ul>
+    </div>`;
+
+    output.innerHTML = html;
+    output.style.display = 'block';
+    output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function escHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+</script>
+
+</body>
+</html>
