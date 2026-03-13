@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowLine — AI Phone Service for Plumbers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #0071e3;
+            --blue-hover: #0077ED;
+            --dark: #1d1d1f;
+            --gray: #86868b;
+            --light-gray: #f5f5f7;
+            --white: #ffffff;
+            --gradient-start: #0071e3;
+            --gradient-end: #00c6ff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--dark);
+            background: var(--white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* ---- NAV ---- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--dark);
+            text-decoration: none;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-cta {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 980px;
+            background: var(--blue);
+            color: var(--white);
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .nav-cta:hover {
+            background: var(--blue-hover);
+        }
+
+        /* ---- HERO ---- */
+        .hero {
+            padding: 160px 24px 120px;
+            text-align: center;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--blue);
+            background: rgba(0, 113, 227, 0.08);
+            padding: 6px 16px;
+            border-radius: 980px;
+            margin-bottom: 28px;
+            letter-spacing: 0.02em;
+        }
+
+        .hero h1 {
+            font-size: clamp(44px, 7vw, 80px);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            color: var(--dark);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: clamp(18px, 2.5vw, 22px);
+            color: var(--gray);
+            max-width: 620px;
+            margin: 0 auto 48px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        /* ---- WAITLIST FORM ---- */
+        .waitlist-form {
+            display: flex;
+            gap: 12px;
+            max-width: 480px;
+            margin: 0 auto;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .waitlist-form input[type="email"] {
+            flex: 1;
+            min-width: 240px;
+            padding: 16px 22px;
+            font-size: 16px;
+            font-family: inherit;
+            border: 1.5px solid #d2d2d7;
+            border-radius: 14px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: var(--white);
+        }
+
+        .waitlist-form input[type="email"]:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12);
+        }
+
+        .waitlist-form button {
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--white);
+            background: var(--blue);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.15s;
+            white-space: nowrap;
+        }
+
+        .waitlist-form button:hover {
+            background: var(--blue-hover);
+        }
+
+        .waitlist-form button:active {
+            transform: scale(0.97);
+        }
+
+        .form-note {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .success-msg {
+            display: none;
+            font-size: 17px;
+            font-weight: 500;
+            color: #34c759;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        /* ---- PHONE VISUAL ---- */
+        .phone-visual {
+            max-width: 900px;
+            margin: 80px auto 0;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .phone-mockup {
+            background: linear-gradient(160deg, #f5f5f7, #e8e8ed);
+            border-radius: 28px;
+            padding: 48px 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(0, 113, 227, 0.06), transparent 60%);
+            pointer-events: none;
+        }
+
+        .call-ui {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .call-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .call-avatar svg {
+            width: 36px;
+            height: 36px;
+            fill: white;
+        }
+
+        .call-label {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .call-name {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .call-transcript {
+            max-width: 480px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .msg {
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.45;
+            max-width: 85%;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .msg.ai {
+            background: var(--white);
+            align-self: flex-start;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .msg.caller {
+            background: var(--blue);
+            color: white;
+            align-self: flex-end;
+        }
+
+        .msg:nth-child(1) { animation-delay: 0.2s; }
+        .msg:nth-child(2) { animation-delay: 0.6s; }
+        .msg:nth-child(3) { animation-delay: 1.0s; }
+        .msg:nth-child(4) { animation-delay: 1.4s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- FEATURES ---- */
+        .features {
+            padding: 140px 24px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .features .section-label {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.08;
+            margin-bottom: 16px;
+        }
+
+        .features .sub {
+            text-align: center;
+            font-size: 19px;
+            color: var(--gray);
+            max-width: 560px;
+            margin: 0 auto 72px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--light-gray);
+            border-radius: 24px;
+            padding: 40px 32px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: var(--gray);
+            line-height: 1.55;
+        }
+
+        /* ---- HOW IT WORKS ---- */
+        .how-it-works {
+            padding: 120px 24px;
+            background: var(--light-gray);
+        }
+
+        .how-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .how-it-works .section-label {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.08;
+            margin-bottom: 72px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 48px;
+            counter-reset: step;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 2px solid var(--blue);
+            color: var(--blue);
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 15px;
+            color: var(--gray);
+            line-height: 1.55;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        /* ---- SOCIAL PROOF ---- */
+        .proof {
+            padding: 120px 24px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .proof blockquote {
+            font-size: clamp(24px, 3.5vw, 36px);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            line-height: 1.3;
+            color: var(--dark);
+            margin-bottom: 24px;
+            font-style: normal;
+        }
+
+        .proof cite {
+            font-size: 16px;
+            color: var(--gray);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 64px;
+            margin-top: 72px;
+            flex-wrap: wrap;
+        }
+
+        .stat h4 {
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat p {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* ---- FINAL CTA ---- */
+        .final-cta {
+            padding: 120px 24px 140px;
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .final-cta h2 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.08;
+            margin-bottom: 16px;
+        }
+
+        .final-cta p {
+            font-size: 19px;
+            color: var(--gray);
+            margin-bottom: 40px;
+        }
+
+        /* ---- FOOTER ---- */
+        footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 24px;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        /* ---- ANIMATIONS (scroll-triggered) ---- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 600px) {
+            .hero { padding: 130px 20px 80px; }
+            .waitlist-form { flex-direction: column; align-items: stretch; }
+            .waitlist-form input[type="email"] { min-width: 0; }
+            .phone-mockup { padding: 32px 20px; }
+            .call-transcript { max-width: 100%; }
+            .features { padding: 100px 20px; }
+            .how-it-works { padding: 80px 20px; }
+            .stats-row { gap: 40px; }
+            .proof { padding: 80px 20px; }
+            .final-cta { padding: 80px 20px 100px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="logo">Flow<span>Line</span></a>
+        <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="badge">Coming Soon</div>
+    <h1>Never miss a call.<br><span class="gradient-text">Even under a sink.</span></h1>
+    <p>FlowLine is the AI receptionist built for plumbers. It answers your calls, books appointments, sells your services, and handles every customer — so you can focus on the job in front of you.</p>
+
+    <div id="waitlist">
+        <form class="waitlist-form" id="waitlistForm">
+            <input type="email" placeholder="Enter your email" required aria-label="Email address">
+            <button type="submit">Join the Waitlist</button>
+        </form>
+        <p class="form-note">Be the first to know when we launch. No spam, ever.</p>
+        <p class="success-msg" id="successMsg">You're on the list! We'll be in touch soon.</p>
+    </div>
+</section>
+
+<!-- PHONE VISUAL -->
+<div class="phone-visual fade-in">
+    <div class="phone-mockup">
+        <div class="call-ui">
+            <div class="call-avatar">
+                <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z"/></svg>
+            </div>
+            <p class="call-label">FlowLine AI • Live Call</p>
+            <p class="call-name">Incoming: Sarah M.</p>
+            <div class="call-transcript">
+                <div class="msg ai">Hi, thanks for calling Mike's Plumbing! This is FlowLine, Mike's assistant. How can I help you today?</div>
+                <div class="msg caller">Hi, my kitchen sink is leaking pretty badly. Can someone come out today?</div>
+                <div class="msg ai">I'm sorry to hear that! I have an opening today at 3:30 PM. Mike can be there within a 30-minute window. Would that work for you?</div>
+                <div class="msg caller">That's perfect, thank you!</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features">
+    <p class="section-label fade-in">Features</p>
+    <h2 class="fade-in">Your best employee<br>never takes a break.</h2>
+    <p class="sub fade-in">FlowLine handles every call like a seasoned receptionist who knows your business inside and out.</p>
+
+    <div class="features-grid">
+        <div class="feature-card fade-in">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </div>
+            <h3>Instant Scheduling</h3>
+            <p>Books appointments directly onto your calendar. Customers get confirmed in seconds, not hours of phone tag.</p>
+        </div>
+        <div class="feature-card fade-in">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </div>
+            <h3>Sells Your Services</h3>
+            <p>Recommends add-on services, quotes your rates, and upsells — turning every call into maximum revenue.</p>
+        </div>
+        <div class="feature-card fade-in">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.92 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.987 7.987 0 015.08 16zm2.95-8H5.08a7.987 7.987 0 014.33-3.56A15.65 15.65 0 008.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2s.07-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 01-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg>
+            </div>
+            <h3>24/7 Availability</h3>
+            <p>Emergency leak at 2 AM? FlowLine picks up, qualifies the job, and dispatches you — or schedules for morning.</p>
+        </div>
+        <div class="feature-card fade-in">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/><path d="M12 15l1.57-3.43L17 10l-3.43-1.57L12 5l-1.57 3.43L7 10l3.43 1.57z"/></svg>
+            </div>
+            <h3>Sounds Human</h3>
+            <p>Natural, conversational AI that customers actually enjoy talking to. No robotic menus or awkward pauses.</p>
+        </div>
+        <div class="feature-card fade-in">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            </div>
+            <h3>Customer Memory</h3>
+            <p>Remembers repeat callers, their address, past jobs, and preferences. Every call feels personal and professional.</p>
+        </div>
+        <div class="feature-card fade-in">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.611 3.611 0 0112 15.6z"/></svg>
+            </div>
+            <h3>Easy Setup</h3>
+            <p>Forward your business line to FlowLine. We learn your services, pricing, and availability in minutes. No tech skills needed.</p>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+    <div class="how-inner">
+        <p class="section-label fade-in">How It Works</p>
+        <h2 class="fade-in">Three steps to<br>freedom.</h2>
+        <div class="steps">
+            <div class="step fade-in">
+                <div class="step-number">1</div>
+                <h3>Connect Your Line</h3>
+                <p>Forward your business phone to FlowLine. Takes about 60 seconds. Keep your existing number.</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-number">2</div>
+                <h3>Teach It Your Business</h3>
+                <p>Tell FlowLine your services, rates, hours, and service area. Our AI learns how you like things done.</p>
+            </div>
+            <div class="step fade-in">
+                <div class="step-number">3</div>
+                <h3>Get Back to Work</h3>
+                <p>FlowLine answers calls, books jobs, and sends you a summary. You just show up and do what you do best.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SOCIAL PROOF / STATS -->
+<section class="proof">
+    <blockquote class="fade-in">"I used to miss 40% of my calls while on jobs. That's thousands in lost revenue every month."</blockquote>
+    <cite class="fade-in">— The average independent plumber</cite>
+
+    <div class="stats-row">
+        <div class="stat fade-in">
+            <h4>40%</h4>
+            <p>of calls go unanswered<br>by solo tradespeople</p>
+        </div>
+        <div class="stat fade-in">
+            <h4>$1,200</h4>
+            <p>average revenue lost<br>per missed call</p>
+        </div>
+        <div class="stat fade-in">
+            <h4>0</h4>
+            <p>calls missed<br>with FlowLine</p>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+    <h2 class="fade-in">Stop losing jobs<br>to voicemail.</h2>
+    <p class="fade-in">Join the waitlist and be the first plumber on your block with an AI receptionist that never calls in sick.</p>
+    <form class="waitlist-form fade-in" id="waitlistForm2">
+        <input type="email" placeholder="Enter your email" required aria-label="Email address">
+        <button type="submit">Join the Waitlist</button>
+    </form>
+    <p class="form-note fade-in">Free for early adopters. Limited spots available.</p>
+    <p class="success-msg" id="successMsg2">You're on the list! We'll be in touch soon.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>&copy; 2026 FlowLine. All rights reserved.</p>
+</footer>
+
+<script>
+    // Scroll-triggered fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Waitlist form handling
+    function handleSubmit(formId, msgId) {
+        const form = document.getElementById(formId);
+        const msg = document.getElementById(msgId);
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            form.style.display = 'none';
+            form.nextElementSibling.style.display = 'none'; // hide form-note
+            msg.style.display = 'block';
+        });
+    }
+
+    handleSubmit('waitlistForm', 'successMsg');
+    handleSubmit('waitlistForm2', 'successMsg2');
+
+    // Smooth scroll for nav CTA
+    document.querySelector('.nav-cta').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+
+</body>
+</html>
